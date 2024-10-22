@@ -1,5 +1,5 @@
 // URLs das APIs
-const weatherApiUrl = 'http://api.openweathermap.org/data/2.5/weather?appid=0313d39117e818dd945043a1cc830e8b&units=metric&q=';
+const weatherApiUrl = 'http://api.openweathermap.org/data/2.5/weather?appid=0313d39117e818dd945043a1cc830e8b&units=metric';
 const geoApiUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 const geoApiKey = '0313d39117e818dd945043a1cc830e8b';
 
@@ -17,13 +17,32 @@ const map = new ol.Map({
     }),
 });
 
+// Função para calcular a fase da lua
+function getMoonPhase(date) {
+    const moonPhaseArray = [
+        'nova',        // Lua Nova
+        'crescente',   // Lua Crescente
+        'primeira_quarta', // Quarto Crescente
+        'cheia',       // Lua Cheia
+        'minguante'    // Lua Minguante
+    ];
+
+    const lunarMonth = 29.53; // Duração média do ciclo lunar em dias
+    const newMoonDate = new Date(2000, 0, 6); // Data da Lua Nova em 2000
+
+    const daysSinceNewMoon = (date - newMoonDate) / (1000 * 60 * 60 * 24);
+    const moonPhaseIndex = Math.floor((daysSinceNewMoon % lunarMonth) / (lunarMonth / 5));
+
+    return moonPhaseArray[moonPhaseIndex];
+}
+
 // Função para buscar previsão do tempo
 async function fetchWeatherData(city) {
     try {
         showLoadingIndicator(true);
-        const response = await fetch(`${weatherApiUrl}&q=${encodeURIComponent(city)}`);
+        const response = await fetch(`${weatherApiUrl}&q=${city}`);
         const data = await response.json();
-        if (data && data.main) {
+        if (data) {
             displayWeatherData(data);
             cacheCity(city);
         } else {
@@ -40,7 +59,7 @@ async function fetchWeatherData(city) {
 async function fetchCityCoordinates(city) {
     try {
         showLoadingIndicator(true);
-        const response = await fetch(`${geoApiUrl}${encodeURIComponent(city)}&appid=${geoApiKey}`);
+        const response = await fetch(`${geoApiUrl}${city}&appid=${geoApiKey}`);
         const data = await response.json();
         if (data && data.length > 0) {
             const { lat, lon } = data[0];
@@ -58,26 +77,36 @@ async function fetchCityCoordinates(city) {
 // Função para mover o mapa para a cidade encontrada
 function moveMapToCity(lat, lon) {
     const view = map.getView();
-    view.setCenter(ol.proj.fromLonLat([lon, lat])); // Corrigido para lon, lat
+    view.setCenter(ol.proj.fromLonLat([lon, lat]));
     view.setZoom(10);
 }
 
 // Função para exibir dados da previsão do tempo
-function displayWeatherData(weather) {
-    document.getElementById('city-name').textContent = weather.name; // Atualizado para usar 'name'
-    document.getElementById('current-date').textContent = new Date().toLocaleDateString(); // Data atual
-    document.getElementById('temp-current').textContent = weather.main.temp; // Temperatura atual
-    document.getElementById('temp-max').textContent = weather.main.temp_max; // Máxima
-    document.getElementById('temp-min').textContent = weather.main.temp_min; // Mínima
-    document.getElementById('weather-description').textContent = weather.weather[0].description; // Descrição do clima
-    document.getElementById('rain-prob').textContent = 'N/A'; // Dados de chuva podem não estar disponíveis
-    document.getElementById('moon-phase').textContent = 'N/A'; // Dados da fase da lua não disponíveis
+function displayWeatherData(data) {
+    const cityName = data.name; // Nome da cidade
+    const currentDate = new Date().toLocaleDateString('pt-BR'); // Data atual
 
-    // Ícones
-    document.getElementById('weather-icon').src = `http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`; // Ícone do clima
-    document.getElementById('moon-icon').src = ''; // Não disponível
+    document.getElementById('city-name').textContent = cityName;
+    document.getElementById('current-date').textContent = currentDate;
+    document.getElementById('temp-current').textContent = data.main.temp.toFixed(1); // Temperatura atual
+    document.getElementById('temp-max').textContent = data.main.temp_max.toFixed(1); // Temperatura máxima
+    document.getElementById('temp-min').textContent = data.main.temp_min.toFixed(1); // Temperatura mínima
+    document.getElementById('rain-prob').textContent = data.rain ? data.rain['1h'] : 0; // Probabilidade de chuva (1 hora)
 
-    // Previsão (não implementado aqui, você pode adicionar se necessário)
+    // Adicionar uma descrição do clima
+    const weatherDescription = data.weather[0].description;
+    document.getElementById('weather-description').textContent = weatherDescription;
+
+    // Exibir ícone do clima
+    const iconId = data.weather[0].icon;
+    document.getElementById('weather-icon').src = `http://openweathermap.org/img/wn/${iconId}.png`;
+
+    // Calcular e exibir a fase da lua
+    const moonPhase = getMoonPhase(new Date());
+    document.getElementById('moon-phase').textContent = moonPhase;
+
+    // Exibir ícone da fase da lua
+    document.getElementById('moon-icon').src = `./image/icons8-lua-${moonPhase}.png`; // Ajuste o caminho para os ícones da lua
 }
 
 // Função para cachear cidades consultadas

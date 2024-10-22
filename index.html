@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://openlayers.org/en/v6.5.0/build/ol.js" defer></script>
     <script src="scripts.js" defer></script>
-    <link rel="shortcut icon" href="./image/logo.png" type="image/png">
 </head>
 <body>
     <header>
@@ -26,28 +25,24 @@
         <section id="weather-info">
             <h2>Informações da Previsão</h2>
             <div id="current-weather" class="weather-card">
-                <p>Cidade: <span id="city-name"></span></p>
-                <p>Data: <span id="current-date"></span></p>
-                <p>Temperatura Atual: <span id="temp-current"></span>°C</p>
-                <p>Máxima: <span id="temp-max"></span>°C, Mínima: <span id="temp-min"></span>°C</p>
+                <p><b>Cidade: </b><span id="city-name"></span></p>
+                <br>
+                <p><b>Data: </b><span id="current-date"></span></p>
+                <br>
+                <p><b>Temperatura Atual: </b><span id="temp-current"></span>°C</p>
+                <br>
+                <p><b>Máxima: </b><span id="temp-max"></span> °C, Mínima: <span id="temp-min"></span> °C</p>
+                <br>
                 <div class="weather-description">
-                    <p>Clima: <span id="weather-description"></span></p>
-                    <img id="weather-icon" src="./image/icons8-sol-48.png" alt="Ícone do clima" class="icon">
-                    <img id="weather-icon" src="./image/icons8-clima-48.png" alt="Ícone do clima" class="icon">
-                    <img id="weather-icon" src="./image/icons8-dia-parcialmente-nublado-48.png" alt="Ícone do clima" class="icon">
-                    <img id="weather-icon" src="./image/icons8-nuvem-com-raios-48.png" alt="Ícone do clima" class="icon">
-                    <img id="weather-icon" src="./image/icons8-chuva-intensa-48.png" alt="Ícone do clima" class="icon">
-                    <img id="weather-icon" src="./image/icons8-possibilidade-de-tempestade-48.png" alt="Ícone do clima" class="icon">
-                    <img id="weather-icon" src="./image/icons8-tempestade-com-chuva-forte-48.png" alt="Ícone do clima" class="icon">
-                    
+                  <p><b>Clima: </b><span id="weather-description"></span></p>
+                  <br>
                 </div>
-                <p>Probabilidade de Chuva: <span id="rain-prob"></span>%</p>
+                
+                <p><b>Probabilidade de Chuva: </b><span id="rain-prob"></span>%</p>
+                <br>
                 <div class="moon-phase">
-                    <p>Fase da Lua: <span id="moon-phase"></span></p>
-                    <img id="moon-icon" src="./image/icons8-lua-cheia-48.png" alt="Ícone da fase da lua" class="icon">
-                    <img id="moon-icon" src="./image/icons8-lua-crescente-48.png" alt="Ícone da fase da lua" class="icon">
-                    <img id="moon-icon" src="./image/icons8-lua-minguante-48.png" alt="Ícone da fase da lua" class="icon">
-                    <img id="moon-icon" src="./image/icons8-lua-nova-48.png" alt="Ícone da fase da lua" class="icon">
+                    <p><b>Fase da Lua: </b><span id="moon-phase"></span></p>
+                    
                 </div>
             </div>
             <h3>Previsão para os Próximos 3 Dias</h3>
@@ -65,7 +60,6 @@
                 <option value="belem">Belém</option>
                 <option value="porto_alegre">Porto Alegre</option>
                 <option value="goiania">Goiânia</option>
-                
             </select>
         </section>
     </main>
