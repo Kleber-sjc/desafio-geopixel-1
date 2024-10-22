@@ -1,60 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Previsão do Tempo Brasil</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://openlayers.org/en/v6.5.0/build/ol.js" defer></script>
-  <script src="scripts.js" defer></script>
-  <link rel="shortcut icon" href="./image/logo.png" type="geopixel">
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão do Tempo Brasil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://openlayers.org/en/v6.5.0/build/ol.js" defer></script>
+    <script src="scripts.js" defer></script>
+    <link rel="shortcut icon" href="./image/logo.png" type="image/png">
 </head>
 <body>
-  <header>
-    <h1>Previsão do Tempo Brasil</h1>
-    <div class="search-bar">
-      <input type="text" id="city-input" placeholder="Digite o nome da cidade" aria-label="Nome da cidade">
-      <button id="search-btn">Consultar</button>
-    </div>
-  </header>
-  
-  <main>
-    <div id="loading-indicator" style="display:none;">Carregando...</div>
-    <div id="map" class="map" aria-label="Mapa da previsão do tempo"></div>
-    
-    
-    <section id="weather-info">
-      <h2>Informações da Previsão</h2>
-      <div id="current-weather">
-        <p>Cidade: <span id="city-name"></span></p>
-        <p>Data: <span id="current-date"></span></p>
-        <p>Temperatura Atual: <span id="temp-current"></span>°C</p>
-        <p>Máxima: <span id="temp-max"></span>°C, Mínima: <span id="temp-min"></span>°C</p>
-        <div class="weather-description">
-          <p>Clima: <span id="weather-description"></span></p>
-          <img id="weather-icon" src="./image/sol.png" alt="Ícone do clima" class="icon">
+    <header>
+        <h1>Previsão do Tempo Brasil</h1>
+        <div class="search-bar">
+            <input type="text" id="city-input" placeholder="Digite o nome da cidade" aria-label="Nome da cidade">
+            <button id="search-btn">Consultar</button>
         </div>
-        <p>Probabilidade de Chuva: <span id="rain-prob"></span>%</p>
-        <div class="moon-phase">
-          <p>Fase da Lua: <span id="moon-phase"></span></p>
-          <img id="moon-icon" src="./image/partly_cloudy_night_24dp_000000_FILL0_wght200_GRAD0_opsz40.png" alt="Ícone da fase da lua" class="icon">
-        </div>
-      </div>
-      
+    </header>
     
+    <main>
+        <div id="loading-indicator" class="loading" style="display:none;">Carregando...</div>
+        <div id="map" class="map" aria-label="Mapa da previsão do tempo"></div>
+        
+        <section id="weather-info">
+            <h2>Informações da Previsão</h2>
+            <div id="current-weather" class="weather-card">
+                <p>Cidade: <span id="city-name"></span></p>
+                <p>Data: <span id="current-date"></span></p>
+                <p>Temperatura Atual: <span id="temp-current"></span>°C</p>
+                <p>Máxima: <span id="temp-max"></span>°C, Mínima: <span id="temp-min"></span>°C</p>
+                <div class="weather-description">
+                    <p>Clima: <span id="weather-description"></span></p>
+                    <img id="weather-icon" src="./image/sol.png" alt="Ícone do clima" class="icon">
+                </div>
+                <p>Probabilidade de Chuva: <span id="rain-prob"></span>%</p>
+                <div class="moon-phase">
+                    <p>Fase da Lua: <span id="moon-phase"></span></p>
+                    <img id="moon-icon" src="./image/partly_cloudy_night_24dp_000000_FILL0_wght200_GRAD0_opsz40.png" alt="Ícone da fase da lua" class="icon">
+                </div>
+            </div>
 
-      <h3>Previsão para os Próximos 3 Dias</h3>
-      <div id="forecast"></div>
-      <label for="saved-cities">Cidades Consultadas:</label>
-    <select id="saved-cities">
-      <option value="">Selecione uma cidade</option>
-    </select>
-    </section>
-  </main>
+            <h3>Previsão para os Próximos 3 Dias</h3>
+            <div id="forecast" class="forecast-container"></div>
+            <label for="saved-cities">Cidades Consultadas:</label>
+            <select id="saved-cities">
+                <option value="">Selecione uma cidade</option>
+            </select>
+        </section>
+    </main>
 
-  <footer>
-    
-  </footer>
+    <footer>
+        <p>&copy; 2024 Previsão do Tempo Brasil</p>
+    </footer>
 </body>
 </html>
