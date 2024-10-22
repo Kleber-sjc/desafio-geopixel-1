@@ -1,7 +1,7 @@
 // URLs das APIs
-const weatherApiUrl = 'https://api.hgbrasil.com/weather?key=SUA_CHAVE';
+const weatherApiUrl = 'http://api.openweathermap.org/data/2.5/weather?appid=0313d39117e818dd945043a1cc830e8b&units=metric&q=';
 const geoApiUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=';
-const geoApiKey = 'SUA_CHAVE_GEOCODING';
+const geoApiKey = '0313d39117e818dd945043a1cc830e8b';
 
 // Inicialização do mapa com OpenLayers
 const map = new ol.Map({
@@ -21,10 +21,10 @@ const map = new ol.Map({
 async function fetchWeatherData(city) {
     try {
         showLoadingIndicator(true);
-        const response = await fetch(`${weatherApiUrl}&city_name=${city}`);
+        const response = await fetch(`${weatherApiUrl}&q=${encodeURIComponent(city)}`);
         const data = await response.json();
-        if (data && data.results) {
-            displayWeatherData(data.results);
+        if (data && data.main) {
+            displayWeatherData(data);
             cacheCity(city);
         } else {
             alert('Cidade não encontrada. Tente novamente.');
@@ -40,7 +40,7 @@ async function fetchWeatherData(city) {
 async function fetchCityCoordinates(city) {
     try {
         showLoadingIndicator(true);
-        const response = await fetch(`${geoApiUrl}${city}&appid=${geoApiKey}`);
+        const response = await fetch(`${geoApiUrl}${encodeURIComponent(city)}&appid=${geoApiKey}`);
         const data = await response.json();
         if (data && data.length > 0) {
             const { lat, lon } = data[0];
@@ -58,42 +58,26 @@ async function fetchCityCoordinates(city) {
 // Função para mover o mapa para a cidade encontrada
 function moveMapToCity(lat, lon) {
     const view = map.getView();
-    view.setCenter(ol.proj.fromLonLat([lon, lat]));
+    view.setCenter(ol.proj.fromLonLat([lon, lat])); // Corrigido para lon, lat
     view.setZoom(10);
 }
 
 // Função para exibir dados da previsão do tempo
 function displayWeatherData(weather) {
-    document.getElementById('city-name').textContent = weather.city;
-    document.getElementById('current-date').textContent = weather.date;
-    document.getElementById('temp-current').textContent = weather.temp;
-    document.getElementById('temp-max').textContent = weather.forecast[0].max;
-    document.getElementById('temp-min').textContent = weather.forecast[0].min;
-    document.getElementById('weather-description').textContent = weather.description;
-    document.getElementById('rain-prob').textContent = weather.rain_prob;
-    document.getElementById('moon-phase').textContent = weather.moon_phase;
+    document.getElementById('city-name').textContent = weather.name; // Atualizado para usar 'name'
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString(); // Data atual
+    document.getElementById('temp-current').textContent = weather.main.temp; // Temperatura atual
+    document.getElementById('temp-max').textContent = weather.main.temp_max; // Máxima
+    document.getElementById('temp-min').textContent = weather.main.temp_min; // Mínima
+    document.getElementById('weather-description').textContent = weather.weather[0].description; // Descrição do clima
+    document.getElementById('rain-prob').textContent = 'N/A'; // Dados de chuva podem não estar disponíveis
+    document.getElementById('moon-phase').textContent = 'N/A'; // Dados da fase da lua não disponíveis
 
     // Ícones
-    document.getElementById('weather-icon').src = `url_do_icone_clima_${weather.condition_slug}.png`;
-    document.getElementById('moon-icon').src = `url_do_icone_lua_${weather.moon_phase}.png`;
+    document.getElementById('weather-icon').src = `http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`; // Ícone do clima
+    document.getElementById('moon-icon').src = ''; // Não disponível
 
-    displayForecast(weather.forecast);
-}
-
-// Função para exibir previsão dos próximos 3 dias
-function displayForecast(forecast) {
-    const forecastDiv = document.getElementById('forecast');
-    forecastDiv.innerHTML = ''; // Limpa previsões anteriores
-    forecast.slice(1, 4).forEach(day => {
-        const dayDiv = document.createElement('div');
-        dayDiv.innerHTML = `
-            <p>Data: ${day.date}</p>
-            <p>Máxima: ${day.max}°C, Mínima: ${day.min}°C</p>
-            <p>Clima: ${day.description}</p>
-            <p>Chuva: ${day.rain_probability}%</p>
-        `;
-        forecastDiv.appendChild(dayDiv);
-    });
+    // Previsão (não implementado aqui, você pode adicionar se necessário)
 }
 
 // Função para cachear cidades consultadas
@@ -133,5 +117,3 @@ document.getElementById('saved-cities').addEventListener('change', (e) => {
         fetchWeatherData(city);
     }
 });
-
-
