@@ -133,3 +133,5 @@ document.getElementById('saved-cities').addEventListener('change', (e) => {
         fetchWeatherData(city);
     }
 });
+
+
