@@ -3,6 +3,19 @@ const weatherApiUrl = 'http://api.openweathermap.org/data/2.5/weather?appid=0313
 const geoApiUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 const geoApiKey = '0313d39117e818dd945043a1cc830e8b';
 
+// Dicionário para tradução do clima
+const weatherTranslation = {
+    "clear sky": "céu limpo",
+    "few clouds": "poucas nuvens",
+    "scattered clouds": "nuvens dispersas",
+    "broken clouds": "nuvens fragmentadas",
+    "shower rain": "chuva rápida",
+    "rain": "chuva",
+    "thunderstorm": "tempestade",
+    "snow": "neve",
+    "mist": "neblina"
+};
+
 // Inicialização do mapa com OpenLayers
 const map = new ol.Map({
     target: 'map',
@@ -19,19 +32,20 @@ const map = new ol.Map({
 
 // Função para calcular a fase da lua
 function getMoonPhase(date) {
-    const moonPhaseArray = [
-        'nova',        // Lua Nova
-        'crescente',   // Lua Crescente
-        'primeira_quarta', // Quarto Crescente
-        'cheia',       // Lua Cheia
-        'minguante'    // Lua Minguante
-    ];
-
     const lunarMonth = 29.53; // Duração média do ciclo lunar em dias
     const newMoonDate = new Date(2000, 0, 6); // Data da Lua Nova em 2000
 
+    // Cálculo do número de dias desde a última lua nova
     const daysSinceNewMoon = (date - newMoonDate) / (1000 * 60 * 60 * 24);
     const moonPhaseIndex = Math.floor((daysSinceNewMoon % lunarMonth) / (lunarMonth / 5));
+
+    const moonPhaseArray = [
+        'Nova',         // Lua Nova
+        'Crescente',    // Lua Crescente
+        'Primeira_Quarta', // Quarto Crescente
+        'Cheia',        // Lua Cheia
+        'Minguante'     // Lua Minguante
+    ];
 
     return moonPhaseArray[moonPhaseIndex];
 }
@@ -93,8 +107,8 @@ function displayWeatherData(data) {
     document.getElementById('temp-min').textContent = data.main.temp_min.toFixed(1); // Temperatura mínima
     document.getElementById('rain-prob').textContent = data.rain ? data.rain['1h'] : 0; // Probabilidade de chuva (1 hora)
 
-    // Adicionar uma descrição do clima
-    const weatherDescription = data.weather[0].description;
+    // Adicionar uma descrição do clima em português
+    const weatherDescription = weatherTranslation[data.weather[0].description] || data.weather[0].description;
     document.getElementById('weather-description').textContent = weatherDescription;
 
     // Exibir ícone do clima
