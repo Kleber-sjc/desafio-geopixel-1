@@ -5,15 +5,15 @@ const geoApiKey = '0313d39117e818dd945043a1cc830e8b';
 
 // Dicionário para tradução do clima
 const weatherTranslation = {
-    "clear sky": "céu limpo",
-    "few clouds": "poucas nuvens",
-    "scattered clouds": "nuvens dispersas",
-    "broken clouds": "nuvens fragmentadas",
-    "shower rain": "chuva rápida",
-    "rain": "chuva",
-    "thunderstorm": "tempestade",
-    "snow": "neve",
-    "mist": "neblina"
+    "clear sky": "Céu Limpo",
+    "few clouds": "Poucas Nuvens",
+    "scattered clouds": "Nuvens Dispersas",
+    "broken clouds": "Nuvens Fragmentadas",
+    "shower rain": "Chuva Rápida",
+    "rain": "Chuva",
+    "thunderstorm": "Tempestade",
+    "snow": "Neve",
+    "mist": "Neblina"
 };
 
 // Inicialização do mapa com OpenLayers
@@ -50,6 +50,24 @@ function getMoonPhase(date) {
     return moonPhaseArray[moonPhaseIndex];
 }
 
+// Variável para controlar o alerta ativo
+let activeAlert = null;
+
+// Função para mostrar um alerta com SweetAlert2
+function showAlert(icon, title, text) {
+    // Se houver um alerta ativo, fecha-o
+    if (activeAlert) {
+        activeAlert.close();
+    }
+    // Cria um novo alerta
+    activeAlert = Swal.fire({
+        icon: icon,
+        title: title,
+        text: text,
+        confirmButtonText: 'OK'
+    });
+}
+
 // Função para buscar previsão do tempo
 async function fetchWeatherData(city) {
     try {
@@ -60,10 +78,10 @@ async function fetchWeatherData(city) {
             displayWeatherData(data);
             cacheCity(city);
         } else {
-            alert('Cidade não encontrada. Tente novamente.');
+            showAlert('error', 'Cidade não encontrada', 'Tente novamente com um nome de cidade válido.');
         }
     } catch (error) {
-        alert('Erro ao buscar dados da previsão do tempo. Verifique sua conexão.');
+        showAlert('error', 'Erro ao buscar dados', 'Verifique sua conexão à internet e tente novamente.');
     } finally {
         showLoadingIndicator(false);
     }
@@ -79,14 +97,15 @@ async function fetchCityCoordinates(city) {
             const { lat, lon } = data[0];
             moveMapToCity(lat, lon);
         } else {
-            alert('Localização não encontrada. Verifique o nome da cidade.');
+            showAlert('error', 'Localização não encontrada', 'Verifique o nome da cidade.');
         }
     } catch (error) {
-        alert('Erro ao buscar coordenadas da cidade. Verifique sua conexão.');
+        showAlert('error', 'Erro ao buscar coordenadas', 'Verifique sua conexão.');
     } finally {
         showLoadingIndicator(false);
     }
 }
+
 
 // Função para mover o mapa para a cidade encontrada
 function moveMapToCity(lat, lon) {
