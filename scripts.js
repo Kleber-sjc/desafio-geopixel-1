@@ -13,7 +13,8 @@ const weatherTranslation = {
     "rain": "Chuva",
     "thunderstorm": "Tempestade",
     "snow": "Neve",
-    "mist": "Neblina"
+    "mist": "Neblina",
+    "thunderstorm with rain" : "Trovoada com Chuva"
 };
 
 // Inicialização do mapa com OpenLayers
@@ -80,8 +81,6 @@ async function fetchWeatherData(city) {
         } else {
             showAlert('error', 'Cidade não encontrada', 'Tente novamente com um nome de cidade válido.');
         }
-    } catch (error) {
-        showAlert('error', 'Erro ao buscar dados', 'Verifique sua conexão à internet e tente novamente.');
     } finally {
         showLoadingIndicator(false);
     }
