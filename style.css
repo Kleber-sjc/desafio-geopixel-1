@@ -14,6 +14,11 @@ header {
     color: white;
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    background-color: gr;
+    background: linear-gradient(to right,
+    #16406D,#8BA43A )
+    
+
 }
 
 /* Barra de pesquisa */
@@ -107,6 +112,8 @@ footer {
     padding: 20px; 
     text-align: center; 
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); 
+    background: linear-gradient(to right,
+    #16406D,#8BA43A )
 }
 
 .footer-content {
