@@ -139,7 +139,7 @@ function displayWeatherData(data) {
     document.getElementById('moon-phase').textContent = moonPhase;
 
     // Exibir ícone da fase da lua
-    document.getElementById('moon-icon').src = `./image/icons8-lua-${moonPhase}.png`; // Ajuste o caminho para os ícones da lua
+    document.getElementById('moon-icon').src = `./image/icons8-lua-${moonPhase}.png`; 
 }
 
 // Função para cachear cidades consultadas
