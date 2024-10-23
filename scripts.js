@@ -1,5 +1,6 @@
 // URLs das APIs
 const weatherApiUrl = 'http://api.openweathermap.org/data/2.5/weather?appid=0313d39117e818dd945043a1cc830e8b&units=metric';
+const forecastApiUrl = 'http://api.openweathermap.org/data/2.5/forecast?appid=0313d39117e818dd945043a1cc830e8b&units=metric';
 const geoApiUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 const geoApiKey = '0313d39117e818dd945043a1cc830e8b';
 
@@ -14,8 +15,8 @@ const weatherTranslation = {
     "thunderstorm": "Tempestade",
     "snow": "Neve",
     "mist": "Neblina",
-    "thunderstorm with rain" : "Trovoada com Chuva",
-    "light rain" : "Chuva Fraca"
+    "thunderstorm with rain": "Trovoada com Chuva",
+    "light rain": "Chuva Fraca"
 };
 
 // Inicialização do mapa com OpenLayers
@@ -37,16 +38,15 @@ function getMoonPhase(date) {
     const lunarMonth = 29.53; // Duração média do ciclo lunar em dias
     const newMoonDate = new Date(2000, 0, 6); // Data da Lua Nova em 2000
 
-    // Cálculo do número de dias desde a última lua nova
     const daysSinceNewMoon = (date - newMoonDate) / (1000 * 60 * 60 * 24);
     const moonPhaseIndex = Math.floor((daysSinceNewMoon % lunarMonth) / (lunarMonth / 5));
 
     const moonPhaseArray = [
-        'Nova',         // Lua Nova
-        'Crescente',    // Lua Crescente
-        'Primeira_Quarta', // Quarto Crescente
-        'Cheia',        // Lua Cheia
-        'Minguante'     // Lua Minguante
+        'Nova',               // Lua Nova
+        'Crescente',          // Lua Crescente
+        'Quarto_Crescente',   // Quarto Crescente
+        'Cheia',              // Lua Cheia
+        'Minguante'           // Lua Minguante
     ];
 
     return moonPhaseArray[moonPhaseIndex];
@@ -57,11 +57,9 @@ let activeAlert = null;
 
 // Função para mostrar um alerta com SweetAlert2
 function showAlert(icon, title, text) {
-    // Se houver um alerta ativo, fecha-o
     if (activeAlert) {
         activeAlert.close();
     }
-    // Cria um novo alerta
     activeAlert = Swal.fire({
         icon: icon,
         title: title,
@@ -70,7 +68,7 @@ function showAlert(icon, title, text) {
     });
 }
 
-// Função para buscar previsão do tempo
+// Função para buscar previsão do tempo atual
 async function fetchWeatherData(city) {
     try {
         showLoadingIndicator(true);
@@ -78,12 +76,27 @@ async function fetchWeatherData(city) {
         const data = await response.json();
         if (data) {
             displayWeatherData(data);
-            cacheCity(city);
+            fetchForecastData(city);  // Busca a previsão para os próximos dias
         } else {
             showAlert('error', 'Cidade não encontrada', 'Tente novamente com um nome de cidade válido.');
         }
     } finally {
         showLoadingIndicator(false);
+    }
+}
+
+// Função para buscar previsão do tempo para os próximos dias
+async function fetchForecastData(city) {
+    try {
+        const response = await fetch(`${forecastApiUrl}&q=${city}`);
+        const data = await response.json();
+        if (data) {
+            displayForecastData(data);
+        } else {
+            showAlert('error', 'Erro ao buscar previsão', 'Tente novamente mais tarde.');
+        }
+    } catch (error) {
+        showAlert('error', 'Erro ao buscar previsão', 'Verifique sua conexão.');
     }
 }
 
@@ -105,7 +118,6 @@ async function fetchCityCoordinates(city) {
         showLoadingIndicator(false);
     }
 }
-
 
 // Função para mover o mapa para a cidade encontrada
 function moveMapToCity(lat, lon) {
@@ -137,20 +149,43 @@ function displayWeatherData(data) {
     // Calcular e exibir a fase da lua
     const moonPhase = getMoonPhase(new Date());
     document.getElementById('moon-phase').textContent = moonPhase;
-
-    // Exibir ícone da fase da lua
-    document.getElementById('moon-icon').src = `./image/icons8-lua-${moonPhase}.png`; 
 }
 
-// Função para cachear cidades consultadas
-function cacheCity(city) {
-    const savedCities = document.getElementById('saved-cities');
-    if (![...savedCities.options].some(option => option.value === city)) {
-        const option = document.createElement('option');
-        option.value = city;
-        option.text = city;
-        savedCities.add(option);
-    }
+// Função para exibir a previsão do tempo para os próximos dias
+function displayForecastData(data) {
+    const forecastContainer = document.getElementById('forecast');
+    forecastContainer.innerHTML = ''; // Limpa o conteúdo anterior
+
+    const today = new Date();
+    const daysToDisplay = [1, 2, 3]; // Dias seguintes
+
+    // Filtra e exibe a previsão para os próximos dias
+    daysToDisplay.forEach(dayOffset => {
+        const forecastDay = new Date(today);
+        forecastDay.setDate(today.getDate() + dayOffset);
+        
+        const forecastData = data.list.filter(item => {
+            const forecastDate = new Date(item.dt * 1000);
+            return forecastDate.getDate() === forecastDay.getDate() && forecastDate.getMonth() === forecastDay.getMonth();
+        })[0];
+
+        if (forecastData) {
+            const date = forecastDay.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const temp = forecastData.main.temp.toFixed(1);
+            const iconId = forecastData.weather[0].icon;
+            const description = weatherTranslation[forecastData.weather[0].description] || forecastData.weather[0].description;
+
+            const forecastItem = document.createElement('div');
+            forecastItem.className = 'forecast-item';
+            forecastItem.innerHTML = `
+                <h4>${date}</h4>
+                <img src="http://openweathermap.org/img/wn/${iconId}.png" alt="${description}">
+                <p>${temp} °C</p>
+                <p>${description}</p>
+            `;
+            forecastContainer.appendChild(forecastItem);
+        }
+    });
 }
 
 // Função para mostrar/ocultar indicador de carregamento
@@ -168,14 +203,5 @@ document.getElementById('search-btn').addEventListener('click', () => {
         document.getElementById('city-input').value = ''; // Limpa o campo após a busca
     } else {
         alert('Por favor, insira o nome de uma cidade.');
-    }
-});
-
-// Evento para carregar cidades cacheadas
-document.getElementById('saved-cities').addEventListener('change', (e) => {
-    const city = e.target.value;
-    if (city) {
-        fetchCityCoordinates(city);
-        fetchWeatherData(city);
     }
 });
