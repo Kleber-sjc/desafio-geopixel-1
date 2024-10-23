@@ -12,13 +12,13 @@ header {
     text-align: center;
     background: linear-gradient(to right, #16406D, #8BA43A);
     color: white;
-    padding: 40px 20px; /* Aumentei o padding para mais espaço */
+    padding: 40px 20px; 
     box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
-    border-bottom-left-radius: 30px; /* Aumentei o raio */
+    border-bottom-left-radius: 30px; 
     border-bottom-right-radius: 30px;
-    font-family: 'Arial', sans-serif; /* Mantenha uma fonte limpa */
+    font-family: 'Arial', sans-serif; 
 }
 
 header:before {
@@ -26,30 +26,30 @@ header:before {
     position: absolute;
     top: 0;
     left: 50%;
-    width: 300%; /* Aumentei a largura para um efeito mais amplo */
+    width: 300%; 
     height: 300%;
-    background: rgba(255, 255, 255, 0.05); /* Mais sutil */
+    background: rgba(255, 255, 255, 0.05); 
     border-radius: 50%;
     transform: translateX(-50%) translateY(-50%);
-    animation: pulse 8s infinite; /* Aumentei a duração da animação */
+    animation: pulse 8s infinite; 
     z-index: 0;
 }
 
 header h1 {
     position: relative;
     z-index: 1;
-    font-size: 3rem; /* Aumentei o tamanho da fonte */
-    letter-spacing: 1.5px; /* Mais espaçamento entre letras */
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra no texto para destaque */
+    font-size: 3rem; 
+    letter-spacing: 1.5px; 
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
 }
 
 header h2 {
     position: relative;
     z-index: 1;
-    font-size: 1.5rem; /* Adicionei um subtítulo */
-    font-weight: 300; /* Estilo mais leve */
-    margin-top: 10px; /* Espaço entre h1 e h2 */
-    color: rgba(255, 255, 255, 0.9); /* Cor mais suave para o subtítulo */
+    font-size: 1.5rem; 
+    font-weight: 300; 
+    margin-top: 10px; 
+    color: rgba(255, 255, 255, 0.9); 
 }
 
 /* Animação de pulso */
