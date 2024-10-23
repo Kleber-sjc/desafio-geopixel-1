@@ -14,7 +14,8 @@ const weatherTranslation = {
     "thunderstorm": "Tempestade",
     "snow": "Neve",
     "mist": "Neblina",
-    "thunderstorm with rain" : "Trovoada com Chuva"
+    "thunderstorm with rain" : "Trovoada com Chuva",
+    "light rain" : "Chuva Fraca"
 };
 
 // Inicialização do mapa com OpenLayers
